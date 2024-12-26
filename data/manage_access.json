@@ -1,0 +1,39 @@
+{
+    "manager_access": [
+        {
+            "user": "",
+            "hostname": "",
+            "password": ""
+        },
+        {
+            "user": "",
+            "hostname": "",
+            "password": ""
+        },
+        {
+            "user": "user_host_1",
+            "hostname": "host_1",
+            "password": "Gp1o_*Q1g%K^"
+        },
+        {
+            "user": "user_host_192_168_10_3",
+            "hostname": "host_192_168_10_3",
+            "password": "$<Qf-?i<6qtk"
+        },
+        {
+            "user": "user_host_192_168_10_4",
+            "hostname": "host_192_168_10_4",
+            "password": "O$'YhKgCs[5R"
+        },
+        {
+            "user": "user_host_192_168_10_2",
+            "hostname": "host_192_168_10_2",
+            "password": "b@|g.@T*N6b#"
+        },
+        {
+            "user": "user_host_192_168_10_5",
+            "hostname": "host_192_168_10_5",
+            "password": "x`*T6=T0QM<O"
+        }
+    ]
+}

@@ -1,0 +1,35 @@
+---
+- name: Start IPAM and DNS servers
+  hosts: localhost
+  tasks:
+    - name: Get a free IP from IPAM
+      ipam_free_ip:
+        api_url: "http://127.0.0.1:8000"
+        ipam_file: "data/ip_list.json"
+      register: ipam_result
+
+    - name: Display IPAM result
+      debug:
+        msg: "Free IP: {{ ipam_result.free_ip }}, Hostname: {{ ipam_result.hostname }}"
+
+    - name: Register DNS entry
+      dns_register:
+        api_url: "http://127.0.0.1:8000"
+        ip: "{{ ipam_result.free_ip }}"
+        hostname: "{{ ipam_result.hostname }}"
+        dns_file: "data/dns_list.json"
+      register: dns_result
+
+    - name: Display DNS result
+      debug:
+        msg: "{{ dns_result.message }}"
+    
+    - name: Generate usernames and passwords
+      generate_access:
+        dns_file: "data/dns_list.json"
+        manager_access_file: "data/manage_access.json"
+      register: generate_access_result
+
+    - name: Display generate access result
+      debug:
+        msg: "{{ generate_access_result.message }}"

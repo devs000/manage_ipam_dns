@@ -16,6 +16,7 @@ Le module ipam_free_ip sélectionne une adresse IP disponible de manière aléat
   ]
 }
 ```
+
 ### 3. Module DNS : dns_register
 Le module dns_register teste la validation de l'adresse IP sélectionnée par le module IPAM. Ensuite, il vérifie si l'IP n'est pas déjà utilisée, puis l'ajoute dans un fichier dns.json. 
 
@@ -42,8 +43,16 @@ Le module manager_access génère les noms d'utilisateur et mots de passe pour c
   ]
 }
 ```
-### 5. Exécution des Tâches
-Toutes ces tâches sont exécutées par un playbook Ansible qui teste l'ensemble du processus. Le playbook orchestre l'exécution des modules ipam_free_ip, dns_register, et manager_access pour assurer une gestion fluide et automatisée des adresses IP et des enregistrements DNS.
 
-### 6. Conclusion
-En créant ces modules Ansible, nous automatisons la gestion des adresses IP et des enregistrements DNS, ce qui permet de gagner en efficacité et en fiabilité. Ce projet démontre l'utilité d'Ansible pour l'automatisation des tâches réseau et la gestion des infrastructures distantes.
+### 5. Exécution de playbook et de server Flask
+
+```sh
+python3  server.py
+```
+
+```sh
+ansible-playbook  playbook.yml
+```
+
+
+
