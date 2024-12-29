@@ -1,0 +1,7 @@
+# Ignorer les environnements virtuels Python
+venv/
+mon_env/
+tutorial-env/
+
+# Ignorer les fichiers de configuration spécifiques à l'utilisateur
+inventoty.ini
