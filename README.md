@@ -17,6 +17,7 @@ Le module `ipam_free_ip` sélectionne une adresse IP disponible de manière alé
     {"ip": "1.1.1.2", "hostname": ""}
   ]
 }
+``` 
 
 ### 3. Module DNS : 
 Le module dns_register teste la validation de l'adresse IP sélectionnée par le module IPAM. Ensuite, il vérifie si l'IP n'est pas déjà utilisée, puis l'ajoute dans un fichier dns.json. 
