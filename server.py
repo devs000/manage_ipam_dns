@@ -30,8 +30,6 @@ def get_free_ip():
 
         return jsonify(response), 201
     
-        # crear une boucle for pour verifier si IP est libre
-        #  et d'ajouter à l'IP choisi un hostname
 
     except Exception as e:
         response = {"message": e }
