@@ -5,6 +5,8 @@
     - name: Get a free IP from IPAM
       ipam_free_ip:
         api_url: "http://127.0.0.1:8000"
+        hostname: "host_44"  # Ajoutez le hostname ici
+        ip: "192.168.10.2"   # Ajoutez l'IP ici
       register: ipam_result
 
     - name: Display IPAM result
@@ -12,10 +14,10 @@
         msg: "{{ ipam_result }}"
 
     - name: Reserve IP
-      ipam_reserve_ip:
+      ipam_free_ip:
         api_url: "http://127.0.0.1:8000"
-        ip: "192.168.10.2"
-        hostname: "host_44"
+        ip: "192.168.10.5"
+        hostname: "host_555"
       register: result_ip
 
     - name: Display IPAM result
@@ -23,12 +25,12 @@
         msg: "{{ result_ip }}"
 
     - name: Send POST request to manage_access endpoint
-      manage_access:
+      manage_access_host:
         api_url: "http://127.0.0.1:8000"
-        username: "abbas"
+        username: "abs"
         password: "ajdjdjdjd"
       register: response
 
     - name: Print response
       debug:
-        var: response.response
+        msg: "{{ response.response }}"

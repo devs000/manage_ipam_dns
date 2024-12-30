@@ -1,0 +1,25 @@
+{
+    "manager_access": [
+        {
+            "ip": "192.168.10.2",
+            "hostname": "h",
+            "username": "abbas",
+            "password": "ajdjdjdjd"
+        },
+        {
+            "hostname": "host_44",
+            "username": "abs",
+            "password": "ajdjdjdjd"
+        },
+        {
+            "hostname": "host_4444",
+            "username": "abs",
+            "password": "ajdjdjdjd"
+        },
+        {
+            "hostname": "host_555",
+            "username": "abs",
+            "password": "ajdjdjdjd"
+        }
+    ]
+}

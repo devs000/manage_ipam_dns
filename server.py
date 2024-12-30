@@ -5,8 +5,8 @@ import string
 
 app = Flask(__name__)
 
-ipam_file="ip_list.json"
-access_file = "access_list.json"
+ipam_file="data/ip_list.json"
+access_file = "data/access_list.json"
 
 @app.route('/ipam/free_ip', methods=['GET'])
 def get_free_ip():
@@ -56,18 +56,18 @@ def reservation_ip():
             return jsonify(response), 500
         
         if ips_reserve[0]['hostname'] != "" :
-            if ips_reserve[0]['hostname'] == str(hostname[0]):
+            if ips_reserve[0]['hostname'] == hostname:
                 response = { "message": "IP deja enregistré  avec le bon hostname" }
                 return jsonify(response), 200
         
-            if ips_reserve[0]['hostname'] != str(hostname[0]):
+            if ips_reserve[0]['hostname'] != hostname:
                 response = { "message": "IP est déja reservé par un autre hostname " }
                 return jsonify(response), 400
         
 
         for item in ipam_data['ipam']:
             if item['ip'] == ip:
-                item['hostname'] = str(hostname[0])
+                item['hostname'] = str(hostname)
       
         # Save the updated IPAM data back to the file
         with open(ipam_file, 'w') as file:
@@ -83,10 +83,14 @@ def reservation_ip():
 
 @app.route('/manage_access', methods=['POST'])
 def manage_access():
+    # Récupérer les données JSON de la requête
     data = request.json
+
+    # Extraire le nom d'utilisateur et le mot de passe des données
     username = data.get('username')
     password = data.get('password')
 
+    # Vérifier si le nom d'utilisateur et le mot de passe sont fournis
     if not username or not password:
         response = {"message": "Username and password are required"}
         return jsonify(response), 400
@@ -100,8 +104,11 @@ def manage_access():
         try:
             with open(access_file, 'r') as f:
                 access_data = json.load(f)
-        except FileNotFoundError:
-            access_data = {"manager_access": []}
+        except FileNotFoundError as e:
+            response = {"message": str(e)}
+            return jsonify(response), 501
+            # Si le fichier n'existe pas, initialiser access_data avec une structure de base
+            # access_data = {"manager_access": []}
 
         # Récupérer les hostnames non vides et les enregistrer dans access_file.json
         for item in ipam_data['ipam']:
@@ -114,8 +121,9 @@ def manage_access():
                         break
 
                 if not host_exists:
+                    # Ajouter le nouveau hostname à access_data["manager_access"]
                     access_data["manager_access"].append({
-                        "ip": item['ip'],
+                        # "ip": item['ip'],
                         "hostname": item['hostname'],
                         "username": username,
                         "password": password
@@ -129,8 +137,10 @@ def manage_access():
         return jsonify(response), 200
 
     except Exception as e:
+        # En cas d'erreur, retourner un message d'erreur
         response = {"message": str(e)}
         return jsonify(response), 500
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000)
