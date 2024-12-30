@@ -16,8 +16,8 @@
     - name: Reserve IP
       ipam_free_ip:
         api_url: "http://127.0.0.1:8000"
-        ip: "192.168.10.5"
-        hostname: "host_555"
+        ip: "192.168.10.1"
+        hostname: "host_1"
       register: result_ip
 
     - name: Display IPAM result
@@ -28,7 +28,7 @@
       manage_access_host:
         api_url: "http://127.0.0.1:8000"
         username: "abs"
-        password: "ajdjdjdjd"
+        password: "Darwin"
       register: response
 
     - name: Print response

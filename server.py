@@ -107,9 +107,7 @@ def manage_access():
         except FileNotFoundError as e:
             response = {"message": str(e)}
             return jsonify(response), 501
-            # Si le fichier n'existe pas, initialiser access_data avec une structure de base
-            # access_data = {"manager_access": []}
-
+        
         # Récupérer les hostnames non vides et les enregistrer dans access_file.json
         for item in ipam_data['ipam']:
             if item['hostname'] != "":

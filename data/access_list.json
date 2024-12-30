@@ -20,6 +20,11 @@
             "hostname": "host_555",
             "username": "abs",
             "password": "ajdjdjdjd"
+        },
+        {
+            "hostname": "host_1",
+            "username": "abs",
+            "password": "Darwin"
         }
     ]
 }
