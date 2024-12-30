@@ -65,6 +65,10 @@ python3  server.py
 ```sh
 ansible-playbook  playbook.yml
 ```
+ ![Capture d'Ecran de Terminal , execution de playbook](/captures/Cap_2.png)
+
+  ![Capture d'Ecran de fichier Json et Playbook](/captures/Cap_1.png)
+
 
 
 
