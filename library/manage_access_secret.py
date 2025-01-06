@@ -6,29 +6,26 @@ def main():
     module_args = dict(
         api_url=dict(type="str", required=True),
         username=dict(type="str", required=True),
-        password=dict(type="str", required=True)
+        hostname=dict(type="str", required=True)
     )
 
     module = AnsibleModule(argument_spec=module_args)
     api_url = module.params["api_url"]
     username = module.params["username"]
-    password = module.params["password"]
+    hostname = module.params["hostname"]
 
     data = {
-        "username": username,
-        "password": password
+        "hostname": hostname,
+        "username": username
     }
 
     try:
         # Appeler l'API
-        response = requests.post(f"{api_url}/manage_access", json=data)
-
+        response = requests.post(f"{api_url}/access/manage_secret", json=data)
         # Vérifier si la requête a réussi
         response.raise_for_status()
-
         # Extraire les données de la réponse
         data = response.json()
-
         # Sortir avec les données de la réponse
         module.exit_json(changed=True, response=data)
 
@@ -42,5 +39,5 @@ def main():
         # Gérer les autres erreurs inattendues
         module.fail_json(msg=f"Une erreur inattendue s'est produite : {e}", status_code=500)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

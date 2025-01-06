@@ -2,17 +2,20 @@ from flask import Flask, jsonify, request
 import json
 import random
 import string
+import os
 
 app = Flask(__name__)
 
-ipam_file="data/ip_list.json"
-access_file = "data/access_list.json"
+IPAM_FILE="data/ip_list.json"
+SECRET_FILE = "data/access_list.json"
+DNS_FILE = "data/dns_list.json"
+
 
 @app.route('/ipam/free_ip', methods=['GET'])
 def get_free_ip():
     # Simuler une réponse avec une IP libre
     try:
-        with open(ipam_file, 'r') as file:
+        with open(IPAM_FILE, 'r') as file:
             ipam_data = json.load(file)
         ips_libre = [item for item in ipam_data['ipam'] if item['hostname'] == ""]
 
@@ -35,110 +38,72 @@ def get_free_ip():
         response = {"message": e }
         return jsonify(response), 500
     
-@app.route('/ipam/reserve_ip', methods=['POST'])
+
+@app.route('/dns/reserve_dns', methods=['POST'])
 def reservation_ip():
     data = request.json
     ip = data.get('ip')
     hostname = data.get('hostname')
+    print(f"Received request to reserve IP: {ip} for hostname: {hostname}")  # Log the received data
 
     try:
-        with open(ipam_file, 'r') as file:
-            ipam_data = json.load(file)
-    
-        ips_reserve = [item for item in ipam_data['ipam'] if item['ip'] == ip]
-        
-        if not ips_reserve:
-            response = { "message": "IP not exist"}
-            return jsonify(response), 500
-        
-        if len(ips_reserve)>1:
-            response = { "message": "IP exite plusieurs fois  "}
-            return jsonify(response), 500
-        
-        if ips_reserve[0]['hostname'] != "" :
-            if ips_reserve[0]['hostname'] == hostname:
-                response = { "message": "IP deja enregistré  avec le bon hostname" }
-                return jsonify(response), 200
-        
-            if ips_reserve[0]['hostname'] != hostname:
-                response = { "message": "IP est déja reservé par un autre hostname " }
-                return jsonify(response), 400
-        
-
-        for item in ipam_data['ipam']:
+        with open(DNS_FILE, 'r') as file:
+            dns_data = json.load(file)
+        for item in dns_data['dns']:
             if item['ip'] == ip:
-                item['hostname'] = str(hostname)
-      
-        # Save the updated IPAM data back to the file
-        with open(ipam_file, 'w') as file:
-            json.dump(ipam_data, file)
-
-        response = { "message": "IP est reservé avec un bon hostname " }
-        return jsonify(response), 200
-
+                if item['hostname'] == hostname:
+                    return jsonify({"message": "IP already registered with the correct hostname"}), 200
+                else:
+                    return jsonify({"message": "IP is already reserved by another hostname"}), 400
+        # If IP is not reserved, register it
+        dns_data['dns'].append({
+            "ip": ip,
+            "hostname": hostname
+        })
+        # Save the updated DNS data back to the file
+        with open(DNS_FILE, 'w') as file:
+            json.dump(dns_data, file, indent=4)
+        return jsonify({"message": "IP reserved with the correct hostname"}), 200
     except Exception as e:
-        response = { "message": e }
-        return jsonify(response), 500    
+        return jsonify({"message": str(e)}), 500
 
 
-@app.route('/manage_access', methods=['POST'])
-def manage_access():
-    # Récupérer les données JSON de la requête
+def generate_password(length=10):
+    chars = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(random.choice(chars) for i in range(length))
+    return password
+
+
+@app.route('/access/manage_secret', methods=['POST'])
+def manager_secret():
     data = request.json
-
-    # Extraire le nom d'utilisateur et le mot de passe des données
+    hostname = data.get('hostname')
     username = data.get('username')
-    password = data.get('password')
-
-    # Vérifier si le nom d'utilisateur et le mot de passe sont fournis
-    if not username or not password:
-        response = {"message": "Username and password are required"}
-        return jsonify(response), 400
 
     try:
-        # Lire le fichier ip_list.json
-        with open(ipam_file, 'r') as f:
-            ipam_data = json.load(f)
+        if not os.path.exists(SECRET_FILE):
+            return jsonify({"message": f"File {SECRET_FILE} does not exist"}), 500
 
-        # Lire le fichier access_file.json
-        try:
-            with open(access_file, 'r') as f:
-                access_data = json.load(f)
-        except FileNotFoundError as e:
-            response = {"message": str(e)}
-            return jsonify(response), 501
-        
-        # Récupérer les hostnames non vides et les enregistrer dans access_file.json
-        for item in ipam_data['ipam']:
-            if item['hostname'] != "":
-                # Vérifier si le hostname existe déjà dans access_data["manager_access"]
-                host_exists = False
-                for tab in access_data["manager_access"]:
-                    if tab['hostname'] == item['hostname']:
-                        host_exists = True
-                        break
+        with open(SECRET_FILE, 'r') as f:
+            secret_data = json.load(f)
 
-                if not host_exists:
-                    # Ajouter le nouveau hostname à access_data["manager_access"]
-                    access_data["manager_access"].append({
-                        # "ip": item['ip'],
-                        "hostname": item['hostname'],
-                        "username": username,
-                        "password": password
-                    })
+        for item in secret_data['manager_access']:
+            if item['hostname'] == hostname:
+                return jsonify({"message": "hostname already exists"}), 400
+        password = generate_password()
+        secret_data["manager_access"].append({
+            "hostname": hostname,
+            "username": username,
+            "password": password
+        })
+        with open(SECRET_FILE, 'w') as f:
+            json.dump(secret_data, f, indent=4)
+            app.logger.debug(f"Updated secret data: {secret_data}")
 
-        # Sauvegarder les données mises à jour dans le fichier access_file.json
-        with open(access_file, 'w') as file:
-            json.dump(access_data, file, indent=4)
-
-        response = {"message": "Access managed successfully"}
-        return jsonify(response), 200
+        return jsonify({"message": "Parameters added successfully", "hostname": hostname, "username": username, "password": password}), 201
 
     except Exception as e:
-        # En cas d'erreur, retourner un message d'erreur
-        response = {"message": str(e)}
-        return jsonify(response), 500
-
+        return jsonify({"message": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000)

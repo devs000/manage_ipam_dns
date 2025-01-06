@@ -21,7 +21,7 @@ def main():
 
     # Appeler l'API
     try:
-        response = requests.post(f"{api_url}/ipam/reserve_ip", json=data)
+        response = requests.get(f"{api_url}/ipam/free_ip", json=data)
 
         # Vérifier si la requête a réussi
         response.raise_for_status()
