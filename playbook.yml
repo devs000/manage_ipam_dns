@@ -1,37 +1,65 @@
 ---
 - name: Start IPAM and DNS servers
   hosts: localhost
+  vars:
+    hostname: "host_06"
   tasks:
-    - name: Get a free IP from IPAM
-      ipam_free_ip:
-        api_url: "http://127.0.0.1:8000"
-        hostname: "host_11"  # Ajoutez le hostname ici
-        ip: "192.168.10.45"   # Ajoutez l'IP ici
-      register: ipam_result
 
-    - name: Display IPAM result
+#___________________________________________________________
+
+    - name: Obtenir une IP libre depuis IPAM
+      ipam_free_ip:  
+        api_url: "http://127.0.0.1:8000"  
+      register: ipam_result  
+
+    - name: Afficher le résultat de l'IPAM
       debug:
-        msg: "{{ ipam_result }}"
+        msg: "{{ ipam_result.response }}"
+    #___________________________________________________________
 
-    - name: Reserve IP
+    - name: Reserve IP and add hostname
+      uri:
+        url: "http://127.0.0.1:8000/ipam/reserve_ip"
+        method: POST
+        body_format: json
+        body:
+          ip: "{{ ipam_result.response.free_ip }}"  
+          hostname: "{{ hostname }}"
+        return_content: no
+      register: hostname_result
+
+    - name: Display hostname result
+      debug:
+        msg: "{{ hostname_result }}"
+#___________________________________________________________
+
+
+    - name: Reserve IP and Hostname
       dns_register:
         api_url: "http://127.0.0.1:8000"
-        ip: "192.168.10.8"
-        hostname: "host_24"
+        ip: "{{ ipam_result.response.free_ip }}"  
+        hostname: "{{ hostname }}"
       register: result_ip
 
     - name: Display IPAM result
       debug:
         msg: "{{ result_ip }}"
 
+#___________________________________________________________
 
-    - name: Send POST request to manage_access endpoint
-      manage_access_secret:
-        api_url: "http://127.0.0.1:8000"
-        hostname: "host_135"
-        username: "admin_135"
+    - name: Send POST request to manage_access
+      uri:
+        url: "http://127.0.0.1:8000/access/manage_secret"
+        method: POST
+        body_format: json
+        body:
+          hostname: "{{ hostname }}"
+          username: "root"
+        return_content: yes
+        status_code: 201  # Accepter le code de statut 201
       register: response
 
     - name: Print response
       debug:
-        msg: "{{ response.response }}"
+        msg: "{{ response.json }}"
+#___________________________________________________________

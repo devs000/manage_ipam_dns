@@ -4,24 +4,15 @@ import json
 
 def main():
     module_args = dict(
-        api_url=dict(type="str", required=True),
-        hostname=dict(type="str", required=True),
-        ip=dict(type="str", required=True)
+        api_url=dict(type="str", required=True)  # Plus besoin du paramètre 'ip'
     )
 
     module = AnsibleModule(argument_spec=module_args)
     api_url = module.params["api_url"]
-    host = module.params["hostname"]
-    ip_addr = module.params["ip"]
 
-    data = {
-        "ip": ip_addr,
-        "hostname": host
-    }
-
-    # Appeler l'API
+    # Appeler l'API avec une requête GET
     try:
-        response = requests.get(f"{api_url}/ipam/free_ip", json=data)
+        response = requests.get(f"{api_url}/ipam/free_ip")  # Pas de paramètre 'ip'
 
         # Vérifier si la requête a réussi
         response.raise_for_status()
@@ -34,22 +25,7 @@ def main():
 
     except requests.exceptions.HTTPError as http_err:
         # Gérer les erreurs HTTP
-        if response.status_code == 500:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Erreur interne du serveur')}", status_code=500)
-        elif response.status_code == 400:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Requête incorrecte')}", status_code=400)
-        elif response.status_code == 401:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Non autorisé')}", status_code=401)
-        elif response.status_code == 403:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Interdit')}", status_code=403)
-        elif response.status_code == 404:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Non trouvé')}", status_code=404)
-        elif response.status_code == 409:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Conflit')}", status_code=409)
-        elif response.status_code == 429:
-            module.fail_json(msg=f"Erreur HTTP : {http_err.response.json().get('message', 'Trop de requêtes')}", status_code=429)
-        else:
-            module.fail_json(msg=f"Erreur HTTP : {http_err}", status_code=response.status_code)
+        module.fail_json(msg=f"Erreur HTTP : {http_err}", status_code=response.status_code)
     except requests.exceptions.ConnectionError as conn_err:
         # Gérer les erreurs de connexion
         module.fail_json(msg=f"Erreur de connexion : {conn_err}", status_code=503)

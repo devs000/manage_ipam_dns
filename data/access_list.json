@@ -1,19 +1,14 @@
 {
     "manager_access": [
         {
-            "hostname": "host_13",
-            "username": "admin_13",
-            "password": "Q,YkHA*Gg^"
+            "hostname": "host_05",
+            "username": "root",
+            "password": "G?NW(`;<fJ"
         },
         {
-            "hostname": "host_134",
-            "username": "admin_134",
-            "password": "*$QiK`!~+l"
-        },
-        {
-            "hostname": "host_135",
-            "username": "admin_135",
-            "password": "/|XP'.7kj:"
+            "hostname": "host_06",
+            "username": "root",
+            "password": "7psr_GSL@E"
         }
     ]
 }
