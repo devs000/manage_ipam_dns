@@ -1,62 +1,108 @@
-# Gestion IPAM et DNS avec Ansible
-## 1. Introduction
-Notre objectif est de créer des modules Ansible indépendants qui consomment des APIs distantes pour gérer les adresses IP et les enregistrements DNS. Ce projet se compose de trois modules principaux : ipam_free_ip, dns_register, et manager_access. Chaque module peut être exécuté indépendamment sans dépendre des autres, et tous utilisent le même fichier server.py pour l'API.
+Gestion IPAM et DNS avec Ansible
+1. Introduction
+Notre objectif est de développer des modules Ansible autonomes qui interagissent avec des APIs dans le fichier json  pour gérer les adresses IP et les enregistrements DNS. Ce projet est structuré autour de quatres modules principaux : `ipam_free_ip, reserve_ip, dns_register, manager_access`.
 
-## 2. Modules
-### 2.1 Module IPAM : ipam_free_ip
-Le module ipam_free_ip sélectionne une adresse IP disponible de manière aléatoire à partir d'un fichier JSON dédié.
+- Le module ipam_free_ip est chargé de sélectionner une adresse IP libre dans le système IPAM. 
+- Si l'adresse IP est disponible, un hostname lui est attribué, à condition que ce dernier soit également libre. 
+- Ensuite, le module manager_access permet d'associer un nom d'utilisateur (username) et un mot de passe (password) à cette adresse IP pour en gérer l'accès.
 
-Exemple de fichier JSON pour ce module :
+Chaque module fonctionne de manière indépendante, sans dépendance vis-à-vis des autres, tout en utilisant un fichier API commun, server.py, pour assurer la cohérence et la communication avec les systèmes distants.
 
-```json
-{
-  "ipam": [
-    {"ip": "1.1.1.1", "hostname": ""},
-    {"ip": "1.1.1.2", "hostname": ""}
-  ]
-}
+
+### Module 1 : ipam_free_ip
+
+Ce module est utilisé pour récupérer une adresse IP libre depuis le système IPAM.
+
+Paramètres
+`api_url` : L'URL de l'API IPAM (exemple : http://127.0.0.1:8000).
+
+```yaml
+- name: Obtenir une IP libre depuis IPAM
+  ipam_free_ip:
+    api_url: "http://127.0.0.1:8000"
+  register: ipam_result
 ```
-### 2.2 Module DNS : dns_register
-Le module dns_register fonctionne de manière totalement indépendante du module ipam_free_ip. Il utilise son propre fichier dns.json pour valider et enregistrer les adresses IP et les noms d'hôte.
 
-- Fonctionnalités :
+Le module retourne un objet JSON contenant l'adresse IP libre dans la clé response.free_ip.
 
-  Valide une adresse IP fournie en entrée.
-  Vérifie si l'adresse IP est déjà utilisée dans le fichier dns.json.
-  Ajoute l'adresse IP et le nom d'hôte dans le fichier dns-list.json si elle est disponible.
+### Module 2 : ipam_reserve_ip
 
-Exemple de fichier JSON pour ce module :
+Ce module permet de réserver une adresse IP libre et de lui associer un hostname dans le système IPAM.
 
-```json
-{
-  "dns": [
-    {"ip": "1.1.1.1", "hostname": "server1"},
-    {"ip": "1.1.1.2", "hostname": "server2"}
-  ]
-}
+Paramètres
+- `api_url` : L'URL de l'API IPAM (exemple : http://127.0.0.1:8000).
+- `ip` : L'adresse IP à réserver celle qu'on a récupérée via ipam_free_ip.
+- `hostname`: Le hostname à associer à l'adresse IP.
+
+```yaml
+- name: Reserve IP and add hostname
+  uri:
+    url: "http://127.0.0.1:8000/ipam/reserve_ip"
+    method: POST
+    body_format: json
+    body:
+      ip: "{{ ipam_result.response.free_ip }}"
+      hostname: "{{ hostname }}"
+    return_content: no
+  register: hostname_result
 ```
-### 2.3 Module Accès Manager : manager_access
-Le module manager_access génère des noms d'utilisateur et des mots de passe pour chaque IP, représentant un serveur distant. Il fonctionne indépendamment des autres modules.
 
-Exemple de fichier JSON pour ce module :
+Le module retourne un objet JSON confirmant la réservation de l'IP et l'association du hostname.
 
-```json
-{
-  "manager_access": [
-    {"user": "admin1", "hostname": "server1", "password": "pass123"},
-    {"user": "admin2", "hostname": "server2", "password": "pass456"}
-  ]
-}
+### Module 3 : dns_register
+
+Ce module permet d'enregistrer l'adresse IP et le hostname dans le système DNS.
+
+Paramètres
+- api_url : L'URL de l'API DNS (exemple : http://127.0.0.1:8000).
+- ip : celle qu'on a recupérée dans free ip.
+- hostname : le hostname comme variable dans le playbook.
+
+
+```yaml
+- name: Reserve IP and Hostname
+  dns_register:
+    api_url: "http://127.0.0.1:8000"
+    ip: "{{ ipam_result.response.free_ip }}"
+    hostname: "{{ hostname }}"
+  register: result_ip
 ```
+Le module retourne un objet JSON confirmant l'enregistrement DNS.
+
+### Module 4 : manager_access
+
+Ce module permet de gérer les accès en associant un nom d'utilisateur (username) et un mot de passe (password) à un hostname.
+
+#### Paramètres
+- `api_url  ` : L'URL de l'API de gestion des accès (exemple : http://127.0.0.1:8000).
+- `hostname ` : On recupere hostname dans reserve_ip et dns
+- `username ` : ROOT
+- `password ` : Le mot de passe à associer (si non fourni, un mot de passe par défaut peut être généré).
+
+
+```yaml
+- name: Send POST request to manage_access
+  uri:
+    url: "http://127.0.0.1:8000/access/manage_secret"
+    method: POST
+    body_format: json
+    body:
+      hostname: "{{ hostname }}"
+      username: "root"
+    return_content: yes
+    status_code: 201  # Accepter le code de statut 201
+  register: response
+```
+#### Résultat
+Le module retourne un objet JSON confirmant la création des informations d'accès.
+
 ## 3. Exécution des Modules
 Chaque module peut être exécuté indépendamment sans nécessiter un playbook unique. Tous les modules utilisent le même fichier server.py pour l'API.
 
 ### 3.1 Prérequis
-Python 3.9
-
-Ansible
-
-Flask
+- Python 3.9
+- Ansible
+- Flask
 
 ### 3.2 Configuration de l'environnement
 ```sh
@@ -73,7 +119,6 @@ python3 server.py
 ```sh
 ansible-playbook <nom_du_module>.yml
 ```
-- Par exemple :
 - Pour exécuter le module ipam_free_ip :
 ```sh
 ansible-playbook ipam_free_ip.yml
@@ -91,16 +136,19 @@ ansible-playbook manager_access.yml
 ## 4. Structure des Fichiers
 ```sh
 .
-├── server.py                # API Flask pour les modules
-├── ipam_free_ip.yml         # Playbook pour le module IPAM
-├── dns_register.yml         # Playbook pour le module DNS
-├── manager_access.yml       # Playbook pour le module Manager Access
-├── data/
-│   ├── ip-list.json            # Fichier JSON pour le module IPAM
-│   ├── dns-list.json             # Fichier JSON pour le module DNS
-│   └── access-list.json  # Fichier JSON pour le module Manager Access
-|
-└── README.md                # Documentation du projet
+├── README.md
+├── data
+│   ├── access_list.json
+│   ├── dns_list.json
+│   └── ip_list.json
+├── inventoty.ini
+├── library
+│   ├── dns_register.py
+│   ├── ipam_free_ip.py
+│   ├── manage_access_secret.py
+│   └── reserve_ip.py
+├── playbook.yml
+└── server.py
 ```
 ### 5. Conclusion
 
