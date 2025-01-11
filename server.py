@@ -4,7 +4,7 @@ import random
 import string
 import os
 import re
-
+import regex_validate
 
 app = Flask(__name__)
 
@@ -13,8 +13,6 @@ SECRET_FILE = "data/access_list.json"
 DNS_FILE = "data/dns_list.json"
 
 #_____________________________________________________________________________________________________
-ipv4_regex = re.compile(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
-
 
 @app.route('/ipam/free_ip', methods=['GET'])
 def get_free_ip():
@@ -31,7 +29,7 @@ def get_free_ip():
         
         valid_ips = [] 
         for item in ips_libre:
-            if ipv4_regex.match(item['ip']):  
+            if regex_validate.is_valid_ipv4(item['ip']):  
                 valid_ips.append(item) 
 
         if not valid_ips:
