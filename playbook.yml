@@ -2,7 +2,7 @@
 - name: Start IPAM and DNS servers
   hosts: localhost
   vars:
-    hostname: "host_06"
+    hostname: "host_07"
   tasks:
 
 #___________________________________________________________

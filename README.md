@@ -114,24 +114,10 @@ source venv/bin/activate
 python3 server.py
 ```
 ### 3.4 Exécution des Modules
-- Pour exécuter un module spécifique, utilisez la commande suivante :
+- Pour exécuter les modules  :
 
 ```sh
-ansible-playbook <nom_du_module>.yml
-```
-- Pour exécuter le module ipam_free_ip :
-```sh
-ansible-playbook ipam_free_ip.yml
-```
-- Pour exécuter le module dns_register :
-
-```sh
-ansible-playbook dns_register.yml
-```
-- Pour exécuter le module manager_access :
-
-```sh
-ansible-playbook manager_access.yml
+ansible-playbook playbook.yml
 ```
 ## 4. Structure des Fichiers
 ```sh
