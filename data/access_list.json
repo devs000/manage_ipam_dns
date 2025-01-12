@@ -1,19 +1,154 @@
 {
     "manager_access": [
         {
-            "hostname": "host_05",
+            "hostname": "host_011.com",
             "username": "root",
-            "password": "G?NW(`;<fJ"
+            "password": "W.V3|fFefA"
         },
         {
-            "hostname": "host_06",
+            "hostname": "host_021.com",
             "username": "root",
-            "password": "7psr_GSL@E"
+            "password": "S=KD=N_RCI"
         },
         {
-            "hostname": "host_07",
+            "hostname": "host_031.com",
             "username": "root",
-            "password": "6Go]c%vq3S"
+            "password": "gw-t}J'=<S"
+        },
+        {
+            "hostname": "host_041.com",
+            "username": "root",
+            "password": "2Ag5rDy|J~"
+        },
+        {
+            "hostname": "host_051.com",
+            "username": "root",
+            "password": "wlA\"Qmj9/U"
+        },
+        {
+            "hostname": "host_061.com",
+            "username": "root",
+            "password": "B@XdTX<f=e"
+        },
+        {
+            "hostname": "host_071.com",
+            "username": "root",
+            "password": "ePH3<EU[v]"
+        },
+        {
+            "hostname": "host_081.com",
+            "username": "root",
+            "password": "u#C/0#UxCV"
+        },
+        {
+            "hostname": "host_091.com",
+            "username": "root",
+            "password": "l*XJBEKtiY"
+        },
+        {
+            "hostname": "host_101.com",
+            "username": "root",
+            "password": "|!(JQ{?174"
+        },
+        {
+            "hostname": "host_011.fr",
+            "username": "root",
+            "password": "A6)RU#kZ+a"
+        },
+        {
+            "hostname": "host_021.fr",
+            "username": "root",
+            "password": "Awoi%bn59G"
+        },
+        {
+            "hostname": "host_031.fr",
+            "username": "root",
+            "password": "4-pX$o|8KG"
+        },
+        {
+            "hostname": "host_041.fr",
+            "username": "root",
+            "password": "2]O4>mGs3$"
+        },
+        {
+            "hostname": "host_051.fr",
+            "username": "root",
+            "password": "^AfqZ0&|{|"
+        },
+        {
+            "hostname": "host_061.fr",
+            "username": "root",
+            "password": "9~eK&sA1Vn"
+        },
+        {
+            "hostname": "host_071.fr",
+            "username": "root",
+            "password": "P{?z4*U,.@"
+        },
+        {
+            "hostname": "host_081.fr",
+            "username": "root",
+            "password": ":9`Y`I1R|w"
+        },
+        {
+            "hostname": "host_091.fr",
+            "username": "root",
+            "password": ">5@qqHqu~e"
+        },
+        {
+            "hostname": "host_101.fr",
+            "username": "root",
+            "password": "S[{j%p#VTL"
+        },
+        {
+            "hostname": "host_011.dz",
+            "username": "root",
+            "password": "-on2`Eo&p'"
+        },
+        {
+            "hostname": "host_021.dz",
+            "username": "root",
+            "password": "c(S\\$H0&I_"
+        },
+        {
+            "hostname": "host_031.dz",
+            "username": "root",
+            "password": "n\\iz0ScXYp"
+        },
+        {
+            "hostname": "host_041.dz",
+            "username": "root",
+            "password": "wU$s[SC;bT"
+        },
+        {
+            "hostname": "host_051.dz",
+            "username": "root",
+            "password": "e{)`t$vlk)"
+        },
+        {
+            "hostname": "host_061.dz",
+            "username": "root",
+            "password": "3z{eg^#ygV"
+        },
+        {
+            "hostname": "host_071.dz",
+            "username": "root",
+            "password": "GdI5}~K&<P"
+        },
+        {
+            "hostname": "host_081.dz",
+            "username": "root",
+            "password": "#K!YlebVWF"
+        },
+        {
+            "hostname": "host_091.dz",
+            "username": "root",
+            "password": "gt>eEMqNQU"
+        },
+        {
+            "hostname": "host_101.dz",
+            "username": "root",
+            "password": "PN=/{99`^\\"
         }
     ]
 }

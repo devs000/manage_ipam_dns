@@ -1,16 +1,64 @@
 {
     "dns": [
         {
-            "ip": "192.168.10.7",
-            "hostname": "host_05"
+            "ip": "192.168.1.6",
+            "hostname": "host_011.fr"
         },
         {
-            "ip": "192.168.10.8",
-            "hostname": "host_06"
+            "ip": "192.168.1.23",
+            "hostname": "host_021.fr"
         },
         {
-            "ip": "192.168.10.1",
-            "hostname": "host_07"
+            "ip": "192.168.1.27",
+            "hostname": "host_041.fr"
+        },
+        {
+            "ip": "192.168.1.16",
+            "hostname": "host_061.fr"
+        },
+        {
+            "ip": "192.168.1.21",
+            "hostname": "host_071.fr"
+        },
+        {
+            "ip": "192.168.1.22",
+            "hostname": "host_081.fr"
+        },
+        {
+            "ip": "192.168.1.8",
+            "hostname": "host_091.fr"
+        },
+        {
+            "ip": "192.168.1.30",
+            "hostname": "host_101.fr"
+        },
+        {
+            "ip": "192.168.1.4",
+            "hostname": "host_011.dz"
+        },
+        {
+            "ip": "192.168.1.28",
+            "hostname": "host_021.dz"
+        },
+        {
+            "ip": "192.168.1.3",
+            "hostname": "host_031.dz"
+        },
+        {
+            "ip": "192.168.1.9",
+            "hostname": "host_051.dz"
+        },
+        {
+            "ip": "192.168.1.5",
+            "hostname": "host_061.dz"
+        },
+        {
+            "ip": "192.168.1.24",
+            "hostname": "host_091.dz"
+        },
+        {
+            "ip": "192.168.1.1",
+            "hostname": "host_101.dz"
         }
     ]
 }

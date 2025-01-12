@@ -2,20 +2,37 @@
 - name: Start IPAM and DNS servers
   hosts: localhost
   vars:
-    hostname: "host_07"
-  tasks:
+    hostnames:
+      - "host_011.dz"
+      - "host_021.dz"
+      - "host_031.dz"
+      - "host_041.dz"
+      - "host_051.dz"
+      - "host_061.dz"
+      - "host_071.dz"
+      - "host_081.dz"
+      - "host_091.dz"
+      - "host_101.dz"
 
-#___________________________________________________________
+  tasks:
+    - name: Créer une liste factice pour boucler 10 fois
+      set_fact:
+        range_list: "{{ range(0, 10) | list }}"
 
     - name: Obtenir une IP libre depuis IPAM
-      ipam_free_ip:  
-        api_url: "http://127.0.0.1:8000"  
-      register: ipam_result  
+      ipam_free_ip:
+        api_url: "http://127.0.0.1:8000"
+      register: ipam_result
+      loop: "{{ range_list }}"
+      loop_control:
+        loop_var: renge_item
 
-    - name: Afficher le résultat de l'IPAM
-      debug:
-        msg: "{{ ipam_result.response }}"
-    #___________________________________________________________
+    # - name: Afficher les IP libres
+    #   debug:
+    #     msg: "IP libre : {{ item.response.free_ip }}"
+    #   loop: "{{ ipam_result.results }}"
+    #   loop_control:
+    #     loop_var: item
 
     - name: Reserve IP and add hostname
       uri:
@@ -23,29 +40,44 @@
         method: POST
         body_format: json
         body:
-          ip: "{{ ipam_result.response.free_ip }}"  
-          hostname: "{{ hostname }}"
+          ip: "{{ item.response.free_ip }}"
+          hostname: "{{ hostnames[item.renge_item] }}"
         return_content: no
       register: hostname_result
+      loop: "{{ ipam_result.results }}"
+      loop_control:
+        loop_var: item
+      ignore_errors: true  # Ignorer les erreurs et continuer
 
-    - name: Display hostname result
-      debug:
-        msg: "{{ hostname_result }}"
-#___________________________________________________________
-
+    # - name: Display hostname result (only failed attempts)
+    #   debug:
+    #     msg: "Failed to reserve IP: {{ item.item.response.free_ip }}, Hostname: {{ hostnames[item.item.renge_item] }}"
+    #   loop: "{{ hostname_result.results }}"
+    #   loop_control:
+    #     loop_var: item
+    #   when: item.failed  # Afficher uniquement en cas d'échec
 
     - name: Reserve IP and Hostname
-      dns_register:
-        api_url: "http://127.0.0.1:8000"
-        ip: "{{ ipam_result.response.free_ip }}"  
-        hostname: "{{ hostname }}"
+      uri:
+        url: "http://127.0.0.1:8000/dns/reserve_dns"
+        method: POST
+        body_format: json
+        body:
+          ip: "{{ item.response.free_ip }}"
+          hostname: "{{ hostnames[item.renge_item] }}"
+        return_content: no
       register: result_ip
+      loop: "{{ ipam_result.results }}"
+      loop_control:
+        loop_var: item
+      ignore_errors: true  # Ignorer les erreurs et continuer
 
-    - name: Display IPAM result
-      debug:
-        msg: "{{ result_ip }}"
-
-#___________________________________________________________
+    # - name: Display IPAM result
+    #   debug:
+    #     msg: "{{ item }}"
+    #   loop: "{{ result_ip.results }}"
+    #   loop_control:
+    #     loop_var: item
 
     - name: Send POST request to manage_access
       uri:
@@ -53,13 +85,19 @@
         method: POST
         body_format: json
         body:
-          hostname: "{{ hostname }}"
+          hostname: "{{ hostnames[item.renge_item] }}"
           username: "root"
         return_content: yes
         status_code: 201  # Accepter le code de statut 201
       register: response
+      loop: "{{ ipam_result.results }}"
+      loop_control:
+        loop_var: item
+      ignore_errors: true  # Ignorer les erreurs et continuer
 
-    - name: Print response
-      debug:
-        msg: "{{ response.json }}"
-#___________________________________________________________
+    # - name: Print response
+    #   debug:
+    #     msg: "{{ item.json }}"
+    #   loop: "{{ response.results }}"
+    #   loop_control:
+    #     loop_var: item

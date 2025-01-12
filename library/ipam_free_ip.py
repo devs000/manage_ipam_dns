@@ -10,16 +10,12 @@ def main():
     module = AnsibleModule(argument_spec=module_args)
     api_url = module.params["api_url"]
 
-    # Appeler l'API avec une requête GET
     try:
         response = requests.get(f"{api_url}/ipam/free_ip")  # Pas de paramètre 'ip'
-
         # Vérifier si la requête a réussi
         response.raise_for_status()
-
         # Extraire les données de la réponse
         data = response.json()
-
         # Sortir avec les données de la réponse
         module.exit_json(changed=True, response=data)
 
