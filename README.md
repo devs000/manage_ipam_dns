@@ -1,4 +1,8 @@
-Gestion IPAM et DNS avec Ansible
+### DIGRAMME DE SEQUENCE ( Comportement)
+
+![Diagramme API FLASK , ANSIBLE, modules](./Diag.png)
+
+# Gestion IPAM et DNS avec Ansible
 1. Introduction
 Notre objectif est de développer des modules Ansible autonomes qui interagissent avec des APIs dans le fichier json  pour gérer les adresses IP et les enregistrements DNS. Ce projet est structuré autour de quatres modules principaux : `ipam_free_ip, reserve_ip, dns_register, manager_access`.
 
@@ -140,6 +144,3 @@ ansible-playbook playbook.yml
 
 Ce projet permet une gestion flexible et modulaire des adresses IP et des enregistrements DNS grâce à des modules Ansible indépendants. Chaque module fonctionne de manière autonome, avec ses propres fichiers JSON, ce qui facilite la maintenance et l'extension du système. L'utilisation d'une API Flask centralisée permet une intégration facile et une communication efficace entre les différents modules.
 
-### DIGRAMME DE SEQUENCE ( Comportement)
-
-![Diagramme API FLASK , ANSIBLE, modules](./Diag.png)
