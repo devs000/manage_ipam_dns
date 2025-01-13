@@ -139,3 +139,7 @@ ansible-playbook playbook.yml
 ### 5. Conclusion
 
 Ce projet permet une gestion flexible et modulaire des adresses IP et des enregistrements DNS grâce à des modules Ansible indépendants. Chaque module fonctionne de manière autonome, avec ses propres fichiers JSON, ce qui facilite la maintenance et l'extension du système. L'utilisation d'une API Flask centralisée permet une intégration facile et une communication efficace entre les différents modules.
+
+### DIGRAMME DE SEQUENCE ( Comportement)
+
+![Diagramme API FLASK , ANSIBLE, modules](./Diag.png)
